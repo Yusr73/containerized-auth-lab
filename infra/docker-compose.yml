@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: auth_db
+    environment:
+      POSTGRES_USER: authuser
+      POSTGRES_PASSWORD: authpass
+      POSTGRES_DB: authdb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - auth_net
+
+  auth:
+    image: python:3.11-slim
+    container_name: auth_service
+    command: sleep infinity
+    volumes:
+      - ../app:/app
+      - ../logs:/logs
+    networks:
+      - auth_net
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+
+networks:
+  auth_net:
