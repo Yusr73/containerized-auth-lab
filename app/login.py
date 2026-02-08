@@ -1,5 +1,6 @@
 import psycopg2
 import bcrypt
+from session import create_session
 
 conn = psycopg2.connect(
     dbname="authdb",
@@ -17,11 +18,12 @@ def get_user(username):
 def login(username, password):
     user = get_user(username)
     if not user:
-        return False, None
+        return None
 
     stored_hash, role = user
 
     if bcrypt.checkpw(password.encode(), stored_hash.encode()):
-        return True, role
+        token = create_session(username, role)
+        return token
 
-    return False, None
+    return None
