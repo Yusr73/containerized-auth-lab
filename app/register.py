@@ -1,6 +1,6 @@
 import psycopg2 #Python library to talk to PostgreSQL
 import bcrypt
-
+from logger import log_event
 # Connect to DB
 conn = psycopg2.connect(  #conn → connection object to your database
     dbname="authdb",
@@ -21,5 +21,8 @@ def register_user(username, password, role="user"):
         )
         conn.commit()
         print(f"User {username} registered successfully.")
+        log_event("REGISTER", username, f"Role: {role}")
     except Exception as e:
         print("Error:", e)
+        log_event("REGISTER_FAIL", username, str(e)) 
+    
